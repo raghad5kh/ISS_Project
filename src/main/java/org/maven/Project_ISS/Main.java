@@ -11,9 +11,9 @@ public class Main {
     public static void main(String[] args) {
        int number=1;
        Scanner scanner = new Scanner(System.in);
-       // ProfessorDao studentDaot = new ProfessorDaoImpl();
-      //  boolean k= studentDaot.exist("Alaa");
-      //  System.out.println(k);
+       /* StudentDao studentDaot = new StudentDaoImpl();
+        int k= studentDaot.get_national_number(53221);
+        System.out.println(k);*/
 
 
 

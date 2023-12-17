@@ -1,8 +1,6 @@
 package org.maven.Project_ISS.socket;
-import org.maven.Project_ISS.dao.ProfessorDao;
-import org.maven.Project_ISS.dao.ProfessorDaoImpl;
-import org.maven.Project_ISS.dao.StudentDao;
-import org.maven.Project_ISS.dao.StudentDaoImpl;
+import org.maven.Project_ISS.AES.AsymmetricEncryption;
+import org.maven.Project_ISS.dao.*;
 import org.maven.Project_ISS.socket.AuthForms.LoginHandler;
 import org.maven.Project_ISS.socket.AuthForms.SignInHandler;
 
@@ -37,7 +35,6 @@ public class ServerClientThread extends Thread {
                 System.out.println(request);
                 String name = in.readLine();
                 System.out.println("Name: " + name);
-
                 String password = in.readLine();
                 System.out.println("Password: " + password);
 
@@ -45,8 +42,10 @@ public class ServerClientThread extends Thread {
                 int PortNumber = Integer.parseInt(in.readLine());
                 System.out.println("Client : " + name + " send request with IPAddress :" + IPAddress + " and Port Number =" + PortNumber);
 
-                new LoginHandler(out, studentDao, professorDao).handleLogin(name,password);
+                new LoginHandler(out, studentDao, professorDao).handleLogin(name, password);
+
             }
+
 
             if (request.contains("SignIn")) {
                 System.out.println(request);
@@ -62,18 +61,60 @@ public class ServerClientThread extends Thread {
                 int PortNumber = Integer.parseInt(in.readLine());
                 System.out.println("Client : " + name + " send request with IPAddress :" + IPAddress + " and Port Number =" + PortNumber);
 
-                new SignInHandler(out, studentDao, professorDao).handleSignIn(id_number,name);
+                new SignInHandler(out, studentDao, professorDao).handleSignIn(id_number, name, password);
+
+
+                String key = studentDao.get_national_number(id_number);
+                if (key == null) {
+                    key = professorDao.get_national_number(id_number);
+                }
+                String address = in.readLine();
+
+
+                System.out.println("address: " + address);
+
+                String address_after_decrypt = AsymmetricEncryption.decrypt(address,key);
+                String phone_number = in.readLine();
+
+                System.out.println("phone_number: " + phone_number);
+                int phone_number_after_decrypt = Integer.parseInt(AsymmetricEncryption.decrypt(phone_number,key));
+                String mobile_number = in.readLine();
+
+                System.out.println("mobile_number: " + mobile_number);
+
+                int mobile_number_after_decrypt = Integer.parseInt(AsymmetricEncryption.decrypt(mobile_number,key));
+                int id = studentDao.get_id(name);
+                if(id==0){
+                     id = professorDao.get_id(name);
+                    Professor professor = new Professor(id,name,password,address_after_decrypt,phone_number_after_decrypt,mobile_number_after_decrypt);
+                    professorDao.update(professor);
+                }
+                else {
+                Student student = new Student(id,name,password,address_after_decrypt,phone_number_after_decrypt,mobile_number_after_decrypt);
+                studentDao.update(student);}
+                String message = "The information completion stage has been completed";
+                String message_after = AsymmetricEncryption.encrypt(message, key);
+                System.out.println("done information");
+                out.println(message_after);
+                out.flush();
+
             }
 
-            out.flush();
+
+
+
+
+
+           /* out.close();
             in.close();
-            out.close();
-            serverClient.close();
+            serverClient.close();*/
+
         } catch (Exception ex) {
             System.out.println(ex);
         } finally {
             System.out.println("Client - " + clientNo + " exit!!");
         }
+
     }
 }
 /*

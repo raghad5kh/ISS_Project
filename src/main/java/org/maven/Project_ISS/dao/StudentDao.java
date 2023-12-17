@@ -6,8 +6,16 @@ public interface StudentDao {
 
     void  save(Student student);
 
-    public boolean exist(int id_number);
+    void  update (Student student);
+    boolean exist(int id_number);
 
-    public boolean exist_account(String username,String password);
+    boolean exist_account(String username,String password);
+
+    String get_national_number(int id_number);
+
+
+    int get_id(String username);
+
+
 
 }

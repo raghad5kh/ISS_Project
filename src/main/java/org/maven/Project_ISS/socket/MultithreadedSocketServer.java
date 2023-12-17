@@ -43,6 +43,7 @@ public class MultithreadedSocketServer {
                 //wait until client request a connection then accept it
                 System.out.println(" >> Client No: " + counter + " started!");
                 new ServerClientThread(serverClient, counter).start();
+
             }
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());

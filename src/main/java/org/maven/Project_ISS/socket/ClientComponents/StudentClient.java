@@ -27,10 +27,15 @@ public class StudentClient {
                     System.out.println("SignIn Start...");
                     out.println("SignIn");
                     commonDetails.signin_processCommonStudentDetails(out, scanner,clientIPAddress,clientPortNumber);
+
+
             }
+
 //            global_variable.Request_Type = "SignIn";
 
+            if(true) {
 
+            }
         } catch (Exception e) {
             System.out.println(e);
         }

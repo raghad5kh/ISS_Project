@@ -1,7 +1,13 @@
 package org.maven.Project_ISS.socket;
 
+import org.maven.Project_ISS.AES.AsymmetricEncryption;
+import org.maven.Project_ISS.dao.ProfessorDao;
+import org.maven.Project_ISS.dao.ProfessorDaoImpl;
+import org.maven.Project_ISS.dao.StudentDao;
+import org.maven.Project_ISS.dao.StudentDaoImpl;
 import org.maven.Project_ISS.socket.ClientComponents.ProfessorClient;
 import org.maven.Project_ISS.socket.ClientComponents.StudentClient;
+import org.maven.Project_ISS.socket.ClientComponents.UserInfo;
 import org.maven.Project_ISS.socket.ClientComponents.commonDetails;
 
 import java.io.*;
@@ -16,6 +22,7 @@ public class TCPClient {
     static ProfessorClient professorClient = new ProfessorClient();
     static StudentClient studentClient = new StudentClient();
     static commonDetails commonDetails = new commonDetails();
+    static UserInfo userInfo = new UserInfo();
 
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
@@ -42,9 +49,38 @@ public class TCPClient {
 
             String serverMessage = in.readLine();
             System.out.println("Server response: " + serverMessage);
+            String compareString ="Your SignIn has been done successfully.";
 
+            String serverMessage2 = in.readLine();
+            if (serverMessage2==null){
+                return ;
+            }
+            String[] parts = serverMessage2.split(",");
+            int id_number= Integer.parseInt(parts[0]);
+            String name= parts[1];
+            String password = parts[2];
+
+
+            if(serverMessage.substring(0, serverMessage.indexOf('.') + 1).equals(compareString.substring(0, compareString.indexOf('.') + 1))) {
+                processUserinfo(clientMessage, out, scanner,id_number,name,password);
+
+            }
+
+            String serverMessage3 = in.readLine();
+            StudentDao studentDao = new StudentDaoImpl();
+            ProfessorDao professorDao = new ProfessorDaoImpl();
+            String key = studentDao.get_national_number(id_number);
+            if(key==null){
+                key = professorDao.get_national_number(id_number);
+            }
+            String serverMessage3_after_decrypt = AsymmetricEncryption.decrypt(serverMessage3,key);
+            System.out.println("Server response: " + serverMessage3_after_decrypt);
+
+
+
+      /*      in.close();
             out.close();
-            socket.close();
+            socket.close();*/
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -67,6 +103,22 @@ public class TCPClient {
             case "2":
                 studentClient.processStudent(out,scanner,answer,clientIPAddress,clientPortNumber);
 //                processStudent(out, scanner);
+                break;
+            default:
+                System.out.println("Unexpected answer!");
+                break;
+        }
+    }
+
+    private static void processUserinfo(String clientMessage, PrintWriter out, Scanner scanner,int id_number,String name,String password) throws Exception {
+
+
+        switch (clientMessage) {
+            case "1":
+               userInfo.ProfessorInfo(out,scanner,clientIPAddress,clientPortNumber,id_number,name,password);
+                break;
+            case "2":
+                userInfo.StudentInfo(out, scanner,clientIPAddress,clientPortNumber,id_number,name,password);
                 break;
             default:
                 System.out.println("Unexpected answer!");

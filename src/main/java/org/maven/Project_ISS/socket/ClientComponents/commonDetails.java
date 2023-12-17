@@ -1,5 +1,6 @@
 package org.maven.Project_ISS.socket.ClientComponents;
 
+import org.maven.Project_ISS.AES.AsymmetricEncryption;
 import org.maven.Project_ISS.dao.*;
 
 import java.io.PrintWriter;
@@ -7,7 +8,7 @@ import java.util.Scanner;
 
 public class commonDetails {
     public  void signin_processCommonStudentDetails(PrintWriter out, Scanner scanner,String clientIPAddress,int clientPortNumber) {
-        StudentDao studentDao = new StudentDaoImpl();
+
         int id_number;
         String name;
         String password;
@@ -26,9 +27,7 @@ public class commonDetails {
         password = scanner.next();
         out.println(password);
         System.out.println("Your password: " + password);
-        if(studentDao.exist(id_number)) {
-        Student student = new Student(0,name,password);
-        studentDao.save(student);}
+
         getClientDetails(out,clientIPAddress,clientPortNumber);
 
         out.flush();
@@ -55,9 +54,7 @@ public class commonDetails {
         password = scanner.next();
         out.println(password);
         System.out.println("Your password: " + password);
-        if(professorDao.exist(id_number)) {
-            Professor professor = new Professor(0,name,password);
-            professorDao.save(professor);}
+
         getClientDetails(out,clientIPAddress,clientPortNumber);
 
         out.flush();
@@ -85,4 +82,6 @@ public class commonDetails {
 
         out.flush();
     }
+
+
 }

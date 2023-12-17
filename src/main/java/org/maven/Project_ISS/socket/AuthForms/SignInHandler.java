@@ -1,6 +1,8 @@
 package org.maven.Project_ISS.socket.AuthForms;
 
+import org.maven.Project_ISS.dao.Professor;
 import org.maven.Project_ISS.dao.ProfessorDao;
+import org.maven.Project_ISS.dao.Student;
 import org.maven.Project_ISS.dao.StudentDao;
 
 import java.io.PrintWriter;
@@ -16,18 +18,30 @@ public class SignInHandler {
         this.professorDao = professorDao;
     }
 
-    public void handleSignIn(int id_number ,String name ) {
+    public void handleSignIn(int id_number ,String name,String password ) {
         boolean isStudentExist = studentDao.exist(id_number);
         boolean isProfExist = professorDao.exist(id_number);
-        if (isStudentExist || isProfExist) {
-
+        if (isStudentExist) {
+            Student student = new Student(0,name,password,null,0,0);
+            studentDao.save(student);
             System.out.println("Client: Sign in successful for " + name );
             out.println("Your SignIn has been done successfully. Welcome, " + name);
             System.out.println("SignIn Done!");
+            out.println(id_number+","+name+","+password);
         }
-       else {
+        else if (isProfExist) {
+            Professor professor = new Professor(0,name,password,null,0,0);
+            professorDao.save(professor);
+            System.out.println("Client: Sign in successful for " + name );
+            out.println("Your SignIn has been done successfully. Welcome, " + name);
+            System.out.println("SignIn Done!");
+            out.println(id_number+","+name+","+password);
+
+        }
+
+       else  {
             System.out.println("Client: Failed to sign in with id_number: " + id_number +
-                    ". This name doesn't exist in our records.");
+                    ".This id_number doesn't exist in our records.");
             out.println("Sorry! This id_number {" + id_number + "} doesn't exist in our records");
         }
     }
