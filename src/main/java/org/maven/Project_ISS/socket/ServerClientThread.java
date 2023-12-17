@@ -1,4 +1,5 @@
 package org.maven.Project_ISS.socket;
+import org.maven.Project_ISS.AES.AsymmetricEncryption;
 import org.maven.Project_ISS.dao.ProfessorDao;
 import org.maven.Project_ISS.dao.ProfessorDaoImpl;
 import org.maven.Project_ISS.dao.StudentDao;
@@ -45,8 +46,9 @@ public class ServerClientThread extends Thread {
                 int PortNumber = Integer.parseInt(in.readLine());
                 System.out.println("Client : " + name + " send request with IPAddress :" + IPAddress + " and Port Number =" + PortNumber);
 
-                new LoginHandler(out, studentDao, professorDao).handleLogin(name,password);
+                new LoginHandler(out, studentDao, professorDao).handleLogin(name, password);
             }
+
 
             if (request.contains("SignIn")) {
                 System.out.println(request);
@@ -62,18 +64,49 @@ public class ServerClientThread extends Thread {
                 int PortNumber = Integer.parseInt(in.readLine());
                 System.out.println("Client : " + name + " send request with IPAddress :" + IPAddress + " and Port Number =" + PortNumber);
 
-                new SignInHandler(out, studentDao, professorDao).handleSignIn(id_number,name);
+                new SignInHandler(out, studentDao, professorDao).handleSignIn(id_number, name, password);
+
+
+                String key = studentDao.get_national_number(id_number);
+                if (key == null) {
+                    key = professorDao.get_national_number(id_number);
+                }
+                String address = in.readLine();
+
+
+                System.out.println("address: " + address);
+
+                String phone_number = in.readLine();
+
+                System.out.println("phone_number: " + phone_number);
+                String mobile_number = in.readLine();
+
+                System.out.println("mobile_number: " + mobile_number);
+
+
+                String message = "The information completion stage has been completed";
+                String message_after = AsymmetricEncryption.encrypt(message, key);
+                System.out.println("done information");
+                out.println(message_after);
+                out.flush();
+
             }
 
-            out.flush();
+
+
+
+
+
+           /* out.close();
             in.close();
-            out.close();
-            serverClient.close();
+            serverClient.close();*/
+
         } catch (Exception ex) {
             System.out.println(ex);
         } finally {
             System.out.println("Client - " + clientNo + " exit!!");
         }
+
     }
 }
 /*

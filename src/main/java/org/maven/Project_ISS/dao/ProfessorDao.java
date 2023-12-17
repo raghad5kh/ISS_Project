@@ -6,4 +6,6 @@ public interface ProfessorDao {
     public boolean exist(int id_number);
 
     public boolean exist_account(String username,String password);
+
+    String get_national_number(int id_number);
 }

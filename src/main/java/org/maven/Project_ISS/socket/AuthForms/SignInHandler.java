@@ -16,7 +16,7 @@ public class SignInHandler {
         this.professorDao = professorDao;
     }
 
-    public void handleSignIn(int id_number ,String name ) {
+    public void handleSignIn(int id_number ,String name,String password ) {
         boolean isStudentExist = studentDao.exist(id_number);
         boolean isProfExist = professorDao.exist(id_number);
         if (isStudentExist || isProfExist) {
@@ -24,6 +24,7 @@ public class SignInHandler {
             System.out.println("Client: Sign in successful for " + name );
             out.println("Your SignIn has been done successfully. Welcome, " + name);
             System.out.println("SignIn Done!");
+            out.println(id_number+","+name+","+password);
         }
        else {
             System.out.println("Client: Failed to sign in with id_number: " + id_number +
