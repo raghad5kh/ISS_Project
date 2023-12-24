@@ -12,6 +12,7 @@ public class SignInHandler {
     private final StudentDao studentDao;
     private final ProfessorDao professorDao;
 
+
     public SignInHandler(PrintWriter out, StudentDao studentDao, ProfessorDao professorDao) {
         this.out = out;
         this.studentDao = studentDao;
