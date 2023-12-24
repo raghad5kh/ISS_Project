@@ -3,7 +3,7 @@ CREATE DATABASE iss_project;
 USE iss_project;
 CREATE TABLE students (
   id INT(15) PRIMARY KEY AUTO_INCREMENT,
-  username VARCHAR(30),
+  username VARCHAR(30) UNIQUE,
   password VARCHAR(8),
   address VARCHAR(30) DEFAULT  NULL,
   phone_number INT(15) DEFAULT  NULL,
@@ -13,7 +13,7 @@ CREATE TABLE students (
 );
 CREATE TABLE professor (
   id INT(15) PRIMARY KEY AUTO_INCREMENT,
-  username VARCHAR(30),
+  username VARCHAR(30) UNIQUE,
   password VARCHAR(8),
   address VARCHAR(30) DEFAULT NULL,
   phone_number INT(15) DEFAULT NULL,
